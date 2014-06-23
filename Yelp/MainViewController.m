@@ -103,6 +103,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     UISearchBar *yelpSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
+    yelpSearchBar.showsCancelButton = YES;
     yelpSearchBar.delegate = self;
     self.navigationItem.titleView = yelpSearchBar;
     [self.navigationItem.titleView setTintColor:[UIColor whiteColor]];
@@ -237,13 +238,13 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     NSLog(@"Text change");
-    searchBar.showsCancelButton = YES;
+    //searchBar.showsCancelButton = YES;
     
 }
 
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     
-    searchBar.showsCancelButton = NO;
+    //searchBar.showsCancelButton = YES;
     NSLog(@"%@", searchBar.text);
 }
 
