@@ -26,22 +26,17 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         
-        self.filterDealsValues = [NSMutableArray arrayWithObjects:@"no", nil];
-        self.filterDistancesValues = [NSMutableArray arrayWithObjects:@"yes", @"no", @"no", @"no", @"no", nil];
-        self.filterCategoriesValues = [NSMutableArray arrayWithObjects:@"no", @"no", @"no", @"no", @"no", @"no", @"no", @"no", nil];
-        self.filterSortsValues = [NSMutableArray arrayWithObjects:@"yes", @"no", @"no", nil];
-        
-        
-        self.filterDeals = [NSMutableArray arrayWithObjects:@"Offering a Deal", nil];
-        self.filterDistances = [NSMutableArray arrayWithObjects:@"Auto", @"0.3 miles", @"1 mile", @"5 miles", @"20 miles", nil];
-        self.filterCategories = [NSMutableArray arrayWithObjects:@"Barbeque", @"Burgers", @"Cafes", @"Chinese", @"Mexican", @"Pizza", @"Thai", @"Vegan", nil];
-        self.filterSorts = [NSMutableArray arrayWithObjects:@"Best matched", @"Distance", @"Highest Rated", nil];
+        // Define display values for the Filter Page
+        NSMutableArray *filterDeals = [NSMutableArray arrayWithObjects:@"Offering a Deal", nil];
+        NSMutableArray *filterDistances = [NSMutableArray arrayWithObjects:@"Auto", @"0.3 miles", @"1 mile", @"5 miles", @"20 miles", nil];
+        NSMutableArray *filterCategories = [NSMutableArray arrayWithObjects:@"Barbeque", @"Burgers", @"Cafes", @"Chinese", @"Mexican", @"Pizza", @"Thai", @"Vegan", nil];
+        NSMutableArray *filterSorts = [NSMutableArray arrayWithObjects:@"Best matched", @"Distance", @"Highest Rated", nil];
         
         self.filterDictionary = [NSMutableDictionary dictionaryWithDictionary:@{
-                                  @"Deals" : self.filterDeals,
-                                  @"Sort" : self.filterSorts,
-                                  @"Distance" : self.filterDistances,
-                                  @"Categories" : self.filterCategories
+                                  @"Deals" : filterDeals,
+                                  @"Sort" : filterSorts,
+                                  @"Distance" : filterDistances,
+                                  @"Categories" : filterCategories
         
                                   }];
     }
@@ -55,15 +50,19 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
+    //Title
     self.navigationItem.title = @"Filters";
     [self.navigationItem.titleView setTintColor:[UIColor whiteColor]];
     
+    //Left bar button
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(popView)];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
     
+    //Right bar button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStyleBordered target:self action:@selector(switchView)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
     
+    //Register the Cell
     [self.tableView registerNib:[UINib nibWithNibName:@"FilterViewCell" bundle:nil] forCellReuseIdentifier:@"FilterViewCell"];
     
 }
@@ -81,6 +80,7 @@
     NSArray *sectionRows = [self.filterDictionary objectForKey:sectionArray[indexPath.section]];
     cell.filterLabel.text = sectionRows[indexPath.row];
     
+    //Special check for Deal switch
     if([cell.filterLabel.text  isEqual: @"Offering a Deal"])
     {
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -97,7 +97,8 @@
     
     NSArray *sectionValuesArray = [self.filterDictionaryValues allKeys];
     NSDictionary *rowDictionary = [self.filterDictionaryValues objectForKey:sectionValuesArray[indexPath.section]];
-
+    
+    //Checkmark
     if ([rowDictionary[cell.filterLabel.text] isEqualToString:@"yes"]) {
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -126,7 +127,7 @@
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return [[self.filterDictionary allKeys] count];
 }
 
 
@@ -167,27 +168,26 @@
         
         if (i == indexPath.row) {
 
+            //Selecting row = value in filterDictionaryValues
             if ([self.filterDictionaryValues[sectionValuesArray[indexPath.section]][sectionRows[indexPath.row]] isEqualToString:@"yes"]) {
                 [self.filterDictionaryValues[sectionValuesArray[indexPath.section]] setObject:@"no" forKey:sectionRows[indexPath.row]];
             } else {
                 [self.filterDictionaryValues[sectionValuesArray[indexPath.section]] setObject:@"yes" forKey:sectionRows[indexPath.row]];
             }
-        
         }
         else {
-            if ([sectionValuesArray[indexPath.section]isEqualToString:@"Categories"]) {
-                
-            } else {
+            //Allow multiple selection only for Categories
+            if (![sectionValuesArray[indexPath.section]isEqualToString:@"Categories"]) {
                 [self.filterDictionaryValues[sectionValuesArray[indexPath.section]] setObject:@"no" forKey:sectionRows[i]];
             }
-
         }
     }
     
-    
+    //Reload only affected sections for collapse / expand
     [tableView reloadSections:[NSMutableIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+//When the switch changed for Deals
 -(void) switchChanged: (id)sender {
     
     UISwitch *switchControl = sender;
@@ -199,6 +199,7 @@
     
 }
 
+// For Search right button
 -(void) switchView {
     
     [self.delegate addItemViewController:self didFinishEnteringItem:self.filterDictionaryValues];
@@ -206,6 +207,7 @@
     
 }
 
+//For cancel 
 -(void) popView {
     
     [self.navigationController popToRootViewControllerAnimated:YES];

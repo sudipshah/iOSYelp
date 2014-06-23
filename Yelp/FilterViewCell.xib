@@ -13,13 +13,19 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Njf-Zf-zln">
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Njf-Zf-zln">
                         <rect key="frame" x="20" y="11" width="175" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="Njf-Zf-zln" secondAttribute="bottom" constant="11" id="aJx-0Y-hxR"/>
+                    <constraint firstItem="Njf-Zf-zln" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11" id="hQ8-XO-9fT"/>
+                    <constraint firstItem="Njf-Zf-zln" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="kOw-as-dRn"/>
+                    <constraint firstAttribute="trailing" secondItem="Njf-Zf-zln" secondAttribute="trailing" constant="125" id="sNO-AU-0i6"/>
+                </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="filterLabel" destination="Njf-Zf-zln" id="tY7-ZE-RQn"/>

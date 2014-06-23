@@ -43,6 +43,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         
         self.title = @"Yelp";
         
+        // Set default values for Yelp API
         self.filterParameters = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                                 @"term": @"",
                                                                                 @"ll" : @"37.7766655,-122.3939869",
@@ -50,6 +51,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
                                                                                 @"deals_filter" : @"0",
                                                                                 @"sort" : @"0",
                                                                                 }];
+        // Create key-value for filter parameters
         self.categoryValues = @{@"Barbeque" : @"bbq",
                                 @"Burgers" : @"burgers",
                                 @"Cafes" : @"cafes",
@@ -72,6 +74,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
                             @"Highest Rated" : @"2"
                             };
         
+        // Define default filter values selected
         NSMutableArray *filterDealsValues = [NSMutableArray arrayWithObjects:@"no", nil];
         NSMutableArray *filterDistancesValues = [NSMutableArray arrayWithObjects:@"yes", @"no", @"no", @"no", @"no", nil];
         NSMutableArray *filterCategoriesValues = [NSMutableArray arrayWithObjects:@"no", @"no", @"no", @"no", @"no", @"no", @"no", @"no", nil];
@@ -88,6 +91,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
                                                                                       @"Distance" : [NSMutableDictionary dictionaryWithObjects:filterDistancesValues forKeys:filterDistances],
                                                                                       @"Categories" : [NSMutableDictionary dictionaryWithObjects:filterCategoriesValues forKeys:filterCategories]
                                                                                       }];
+        // Default search string
         self.searchString = @"";
 
 
@@ -98,22 +102,28 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    //Search bar
     UISearchBar *yelpSearchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
     yelpSearchBar.showsCancelButton = YES;
     yelpSearchBar.delegate = self;
     self.navigationItem.titleView = yelpSearchBar;
     [self.navigationItem.titleView setTintColor:[UIColor whiteColor]];
     
+    //Filter button on left
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStyleBordered target:self action:@selector(filterView)];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
     
     // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
     self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
     
+    //Call the API
     [self refreshListings:@""];
     
+    //Register Cell
     [self.tableView registerNib:[UINib nibWithNibName:@"YelpViewCell" bundle:nil] forCellReuseIdentifier:@"YelpViewCell"];
     
     
@@ -129,20 +139,23 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 
 -(void) refreshListings:(NSString *)searchTerm {
     
+    // Progress HUD
     MBProgressHUD *hud = [[MBProgressHUD alloc] initWithView:self.view];
     [self.view addSubview:hud];
     hud.dimBackground = YES;
     hud.delegate = self;
     hud.labelText = @"Loading...";
     [hud show:YES];
+    
+    //Set the search term
     [self.filterParameters setObject:searchTerm forKey:@"term"];
     
+    // Call the API
     [self.client searchWithTerm:self.filterParameters success:^(AFHTTPRequestOperation *operation, id response) {
         
         self.listings = response[@"businesses"];
         //NSLog(@"Listings: %@", self.listings);
         [self.tableView reloadData];
-        
         [hud hide:YES];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -161,6 +174,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     return [self.listings count];
 }
 
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
@@ -172,14 +186,14 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     
     yelpViewCell.nameLabel.text = listing[@"name"];
     
-    
+    // Check if address exists before assigning
     if ([listing[@"location"][@"address"] count] != 0 ) {
         yelpViewCell.addressLabel.text = listing[@"location"][@"address"][0];
     } else {
         yelpViewCell.addressLabel.text = @" ";
     }
     
-    
+    // Check if category exists before assigning
     if ([listing[@"categories"] count] != 0) {
         
         yelpViewCell.categoryLabel.text = listing[@"categories"][0][0];
@@ -188,10 +202,12 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         yelpViewCell.categoryLabel.text = @" ";
     }
     
+    //Assign review count
     if(listing[@"review_count"]) {
         yelpViewCell.reviewsLabel.text = [NSString stringWithFormat:@"%@ Reviews", listing[@"review_count"]];
     }
     
+    //Assing distance
     if (listing[@"distance"]) {
         NSString *string = [NSString stringWithFormat:@"%@", listing[@"distance"]];
         float stringFloat = [string floatValue];
@@ -199,6 +215,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         yelpViewCell.distanceLabel.text = [NSString stringWithFormat:@"%.1f mi", stringFloat];
     }
     
+    // Assign image
     NSURL *imageURL = [NSURL URLWithString:listing[@"image_url"]];
     [yelpViewCell.thumbnailImage setImageWithURL:imageURL];
     NSURL *reviewImageURL = [NSURL URLWithString:listing[@"rating_img_url"]];
@@ -230,6 +247,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     
 }
 
+//search button on keyboard
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     
     self.searchString = searchBar.text;
@@ -247,11 +265,12 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     [self refreshListings:@"" ];
 }
 
-
+// Dictionary value passed back from FilterViewController
 -(void) addItemViewController:(FilterViewController *)controller didFinishEnteringItem:(NSMutableDictionary *)item {
-    NSLog(@"This was returned: %@", item);
     
     self.filterDictionaryValues = item;
+
+    // Define a fresh default set
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{
                                                                                       @"term": @"",
                                                                                       @"ll" : @"37.7766655,-122.3939869",
@@ -261,8 +280,15 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
                                                                                       @"radius_filter" : @"40000"
                                                                                       }];
     for (id key in self.filterDictionaryValues[@"Categories"]) {
+        
         if ([self.filterDictionaryValues[@"Categories"][key] isEqualToString:@"yes"]) {
-            parameters[@"category_filter"] = [NSString stringWithFormat:@"%@,%@", parameters[@"category_filter"], self.categoryValues[key]];
+            
+            //Check if its a default or need to append to existing
+            if ([parameters[@"category_filter"] isEqualToString:@"restaurants"]) {
+                parameters[@"category_filter"] = self.categoryValues[key];
+            } else {
+                parameters[@"category_filter"] = [NSString stringWithFormat:@"%@,%@", parameters[@"category_filter"], self.categoryValues[key]];
+            }            
             
         }
     }
@@ -285,7 +311,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         parameters[@"deals_filter"] = @"false";
     }
 
-    
+    NSLog(@"Parameters: %@", parameters);
     self.filterParameters = parameters;
     [self refreshListings:self.searchString];
     

@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSDictionary *distanceValues;
 @property (strong, nonatomic) NSDictionary *sortValues;
 
+// Storing user entered values against display values. 
 @property (strong, nonatomic) NSMutableDictionary *filterDictionaryValues;
 
 

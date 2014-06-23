@@ -19,21 +19,10 @@
 
 @property (nonatomic, weak) id <FilterViewControllerDelegate> delegate;
 
-@property (strong, nonatomic) NSMutableDictionary *filterDictionary;
+// Storing user entered values against display values. Defined in MainViewController
 @property (strong, nonatomic) NSMutableDictionary *filterDictionaryValues;
-//@property (strong, nonatomic) NSDictionary *categoryValues;
-//@property (strong, nonatomic) NSDictionary *distanceValues;
-//@property (strong, nonatomic) NSDictionary *sortValues;
 
-@property (strong, nonatomic) NSMutableArray *filterDealsValues;
-@property (strong, nonatomic) NSMutableArray *filterDistancesValues;
-@property (strong, nonatomic) NSMutableArray *filterCategoriesValues;
-@property (strong, nonatomic) NSMutableArray *filterSortsValues;
-
-
-@property (strong, nonatomic) NSMutableArray *filterCategories;
-@property (strong, nonatomic) NSMutableArray *filterSorts;
-@property (strong, nonatomic) NSMutableArray *filterDistances;
-@property (strong, nonatomic) NSMutableArray *filterDeals;
+//Storing display values for the Filter Page
+@property (strong, nonatomic) NSMutableDictionary *filterDictionary;
 
 @end
