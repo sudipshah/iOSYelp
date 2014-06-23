@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Basic Yelp client
 
 This is a headless example of how to implement an OAuth 1.0a Yelp API client. The Yelp API provides an application token that allows applications to make unauthenticated requests to their search API.
@@ -81,3 +82,9 @@ businesses =     (
     };
     total = 760;
 ```
+=======
+iOSYelp
+=======
+
+Demo app using Yelp APIs
+>>>>>>> bbb6d48fe5043f49f7f9a78e5115b71c2e86a5b8
