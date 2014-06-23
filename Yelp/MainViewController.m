@@ -29,8 +29,6 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 @property (strong, nonatomic) NSString *searchString;
 
 
-//@property (weak, nonatomic) IBOutlet UISearchBar *yelpSearchBar;
-
 -(void)filterView;
 -(void) refreshListings:(NSString *)searchTerm;
 
@@ -141,20 +139,9 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     
     [self.client searchWithTerm:self.filterParameters success:^(AFHTTPRequestOperation *operation, id response) {
         
-        //        if (resultType == 0) {
-        //            self.searchResults = response[@"businesses"];
-        //            //[self.searchDisplayController.searchResultsTableView reloadData];
-        //            NSLog(@"In Search");
-        //        } else {
-        //            self.listings = response[@"businesses"];
-        //            [self.tableView reloadData];
-        //        }
-        
         self.listings = response[@"businesses"];
-        NSLog(@"Listings: %@", self.listings);
+        //NSLog(@"Listings: %@", self.listings);
         [self.tableView reloadData];
-        
-        //NSLog(@"Search Listings:  \n \n \n \n %@", self.listings);
         
         [hud hide:YES];
         
@@ -163,7 +150,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error retrieving listings" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alertView show];
-        //        [hud hide:YES];
+        [hud hide:YES];
     }];
 }
 
@@ -209,7 +196,6 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
         NSString *string = [NSString stringWithFormat:@"%@", listing[@"distance"]];
         float stringFloat = [string floatValue];
         stringFloat = stringFloat * 0.000621371;
-        NSLog(@"%.2f", stringFloat);
         yelpViewCell.distanceLabel.text = [NSString stringWithFormat:@"%.1f mi", stringFloat];
     }
     
@@ -237,19 +223,14 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 #pragma - Search Buttons
 
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    NSLog(@"Text change");
-    //searchBar.showsCancelButton = YES;
     
 }
 
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     
-    //searchBar.showsCancelButton = YES;
-    NSLog(@"%@", searchBar.text);
 }
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSLog(@"%@", searchBar.text);
     
     self.searchString = searchBar.text;
     
@@ -266,13 +247,6 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
     [self refreshListings:@"" ];
 }
 
-//-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-//    
-//    [self refreshListings:searchString typeOfResult:0];
-//    
-//    return YES;
-//    
-//}
 
 -(void) addItemViewController:(FilterViewController *)controller didFinishEnteringItem:(NSMutableDictionary *)item {
     NSLog(@"This was returned: %@", item);
@@ -286,13 +260,12 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
                                                                                       @"sort" : @"0",
                                                                                       @"radius_filter" : @"40000"
                                                                                       }];
-    for ( id key in self.filterDictionaryValues[@"Categories"]) {
+    for (id key in self.filterDictionaryValues[@"Categories"]) {
         if ([self.filterDictionaryValues[@"Categories"][key] isEqualToString:@"yes"]) {
             parameters[@"category_filter"] = [NSString stringWithFormat:@"%@,%@", parameters[@"category_filter"], self.categoryValues[key]];
             
         }
     }
-    NSLog(@"Category string: %@", parameters[@"category_filter"] );
     
     for (id key in self.filterDictionaryValues[@"Distance"]) {
         if ([self.filterDictionaryValues[@"Distance"][key] isEqualToString:@"yes"]) {
@@ -320,7 +293,7 @@ NSString * const kYelpTokenSecret = @"LMaTi5cdA7kxIfFSn-E7SyunjYI";
 
 
 -(void)filterView {
-    NSLog(@"Pressed filter");
+    
     FilterViewController *fvc = [[FilterViewController alloc] initWithNibName:@"FilterViewController" bundle:nil];
     fvc.filterDictionaryValues = self.filterDictionaryValues;
     fvc.delegate = self;    

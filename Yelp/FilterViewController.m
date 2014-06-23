@@ -57,8 +57,10 @@
     
     self.navigationItem.title = @"Filters";
     [self.navigationItem.titleView setTintColor:[UIColor whiteColor]];
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(popView)];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStyleBordered target:self action:@selector(switchView)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
     
@@ -79,10 +81,8 @@
     NSArray *sectionRows = [self.filterDictionary objectForKey:sectionArray[indexPath.section]];
     cell.filterLabel.text = sectionRows[indexPath.row];
     
-    //cell.filterLabel.text = [NSString stringWithFormat:@"Section: %d, Row: %d", indexPath.section, indexPath.row];
     if([cell.filterLabel.text  isEqual: @"Offering a Deal"])
     {
-        NSLog(@"Switch put in");
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
         cell.accessoryView = switchView;
         if ([self.filterDictionaryValues[@"Deals"][@"Offering a Deal"] isEqualToString:@"yes"]) {
@@ -97,12 +97,7 @@
     
     NSArray *sectionValuesArray = [self.filterDictionaryValues allKeys];
     NSDictionary *rowDictionary = [self.filterDictionaryValues objectForKey:sectionValuesArray[indexPath.section]];
-    NSLog(@"rowDictionary: %@", rowDictionary);
 
-    
-//    NSArray *rowValuesArray = [rowDictionary allValues];
-//    NSLog(@"rowValuesArray: %@", rowValuesArray);
-    //NSNumber *yes = [NSNumber numberWithBool:YES];
     if ([rowDictionary[cell.filterLabel.text] isEqualToString:@"yes"]) {
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -120,7 +115,6 @@
     if (self.collapsedSectionIndex == section) {
     
         NSArray *sectionArray = [self.filterDictionary allKeys];
-        NSLog(@"%@", sectionArray);
         NSArray *sectionRows = [self.filterDictionary objectForKey:sectionArray[section]];
         
         return [sectionRows count];
@@ -168,10 +162,6 @@
 
     NSArray *sectionValuesArray = [self.filterDictionaryValues allKeys];
     
-    NSLog(@"Row Array: %@", self.filterDictionaryValues[sectionValuesArray[indexPath.section]]);
-    NSLog(@"Row selected: %@", sectionRows[indexPath.row]);
-    NSLog(@"Row Value: %@", self.filterDictionaryValues[sectionValuesArray[indexPath.section]][sectionRows[indexPath.row]]);
-    
     for (NSInteger i = 0; i < [sectionRows count]; i++ ) {
     
         
@@ -185,9 +175,7 @@
         
         }
         else {
-            NSLog(@"key is not equal to row");
-            if ([sectionValuesArray[indexPath.section]isEqualToString:@"Categories" ]) {
-                NSLog(@"Categories here");
+            if ([sectionValuesArray[indexPath.section]isEqualToString:@"Categories"]) {
                 
             } else {
                 [self.filterDictionaryValues[sectionValuesArray[indexPath.section]] setObject:@"no" forKey:sectionRows[i]];
@@ -196,7 +184,6 @@
         }
     }
     
-    NSLog(@"Row Value: %@", self.filterDictionaryValues[sectionValuesArray[indexPath.section]][sectionRows[indexPath.row]]);
     
     [tableView reloadSections:[NSMutableIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
@@ -210,47 +197,9 @@
         self.filterDictionaryValues[@"Deals"][@"Offering a Deal"] = @"no";
     }
     
-    
-    NSLog(@"The switch is %@", switchControl.on ? @"ON" : @"OFF");
 }
 
 -(void) switchView {
-    
-    //NSString *itemToPassBack = @"This is passing back";
-//    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{
-//                                                                                      @"term": @"",
-//                                                                                      @"ll" : @"37.7766655,-122.3939869",
-//                                                                                      @"category_filter" : @"restaurants",
-//                                                                                      @"deals_filter" : @"0",
-//                                                                                      @"sort" : @"0",
-//                                                                                      @"radius_filter" : @"40000"
-//                                                                                      }];
-//    for ( id key in self.filterDictionaryValues[@"Categories"]) {
-//        if ([self.filterDictionaryValues[@"Categories"][key] isEqualToString:@"yes"]) {
-//            parameters[@"category_filter"] = [NSString stringWithFormat:@"%@,%@", parameters[@"category_filter"], self.categoryValues[key]];
-//            
-//        }
-//    }
-//    NSLog(@"Category string: %@", parameters[@"category_filter"] );
-//    
-//    for (id key in self.filterDictionaryValues[@"Distance"]) {
-//        if ([self.filterDictionaryValues[@"Distance"][key] isEqualToString:@"yes"]) {
-//            parameters[@"radius_filter"] = self.distanceValues[key];
-//        }
-//    }
-//    
-//    for (id key in self.filterDictionaryValues[@"Sort"]) {
-//        if ([self.filterDictionaryValues[@"Sort"][key] isEqualToString:@"yes"]) {
-//            parameters[@"sort"] = self.sortValues[key];
-//        }
-//    }
-//    
-//    if ([self.filterDictionaryValues[@"Deals"][@"Offering a Deal"] isEqualToString:@"yes"]) {
-//        parameters[@"deals_filter"] = @"true";
-//    } else {
-//        parameters[@"deals_filter"] = @"false";
-//    }
-    
     
     [self.delegate addItemViewController:self didFinishEnteringItem:self.filterDictionaryValues];
     [self.navigationController popViewControllerAnimated:YES];
